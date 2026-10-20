@@ -38,12 +38,10 @@ export default function LoginForm() {
     
 
     try {
-      const {message,token,user} = await login.mutateAsync(data)
+      const {token,user} = await login.mutateAsync(data)
       // console.log("Submitted",token)
       saveUserToken(token, user)
 
-
-      toast.success(message)
       navigate("/")
       
     } catch (error: unknown) {

@@ -14,7 +14,7 @@ export default function PostActions({ post }: { post: Post }) {
   const { user } = useAuth();
   const refresh = usePostRefresh();
   const like = useMutation({ mutationFn: toggleLike, onSuccess: () => { void refresh(); }, onError: (error) => toast.error(errorMessage(error)) });
-  const share = useMutation({ mutationFn: sharePost, onSuccess: () => { void refresh(); toast.success("Post shared to your profile"); }, onError: (error) => toast.error(errorMessage(error)) });
+  const share = useMutation({ mutationFn: sharePost, onSuccess: () => { void refresh(); toast.success("Post shared successfully"); }, onError: (error) => toast.error(errorMessage(error)) });
   const liked = Boolean(user && post.likes?.includes(user._id));
   return <div className="post-actions grid grid-cols-3 gap-1 border-t border-slate-100 px-2 py-2 sm:px-4">
     <Button variant="ghost" aria-pressed={liked} isDisabled={like.isPending} onPress={() => like.mutate(post._id)} className={`gap-2 px-1 text-sm font-bold ${liked ? "text-primary bg-primary-bg" : "text-slate-600"}`}><ThumbsUp size={19} className={liked ? "fill-current" : ""} />Like</Button>

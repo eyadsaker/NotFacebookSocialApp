@@ -21,3 +21,21 @@ export async function toggleFollow(id: string) {
   const { data } = await api.put<ApiResponse<{ following: boolean }>>(`/users/${id}/follow`);
   return data.data;
 }
+
+async function uploadUserImage(endpoint: "/users/upload-photo" | "/users/upload-cover", field: "photo" | "cover", file: File) {
+  const form = new FormData();
+  form.append(field, file);
+  form.append("privacy", "public");
+  await api.put(endpoint, form);
+  // The upload endpoints do not always return the complete user. Reading the
+  // profile again keeps the navbar, profile page, and future refreshes in sync.
+  return getMyProfile();
+}
+
+export function uploadProfilePhoto(file: File) {
+  return uploadUserImage("/users/upload-photo", "photo", file);
+}
+
+export function uploadCoverPhoto(file: File) {
+  return uploadUserImage("/users/upload-cover", "cover", file);
+}

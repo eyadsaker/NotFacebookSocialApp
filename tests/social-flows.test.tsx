@@ -69,12 +69,14 @@ function SessionInfo() {
 describe("authentication", () => {
   it("saves the token and user on login, then restores the user on refresh", async () => {
     handler = (config) => config.url === "/users/signin" ? { token: "new-token", user: me } : { user: me };
+    const success = vi.spyOn(toast, "success");
     const view = mount(<><LoginForm /><SessionInfo /></>, { signedIn: false, path: "/auth/login" });
     fireEvent.change(screen.getByLabelText("Email"), { target: { value: "eyad@example.test" } });
     fireEvent.change(screen.getByLabelText("Password"), { target: { value: "Test123!demo" } });
     fireEvent.submit(screen.getByRole("button", { name: "Login" }).closest("form")!);
     await waitFor(() => expect(localStorage.getItem("user_token")).toBe("new-token"));
     expect(JSON.parse(localStorage.getItem("user_info")!)._id).toBe(me._id);
+    expect(success).not.toHaveBeenCalled();
     view.unmount();
     mount(<SessionInfo />, { signedIn: false });
     expect(screen.getByText("Eyad Saker")).toBeTruthy();
@@ -175,6 +177,19 @@ describe("posts and comments", () => {
 });
 
 describe("profile and response contracts", () => {
+  it("uploads profile and cover images from the owner's profile", async () => {
+    mount(<Routes><Route path="/profile" element={<Profile />} /></Routes>, { path: "/profile" });
+    const person = userEvent.setup();
+    const image = new File(["image"], "avatar.png", { type: "image/png" });
+    await person.upload(await screen.findByLabelText("Change profile photo"), image);
+    await waitFor(() => expect(requests.some((request) => request.url === "/users/upload-photo" && request.method === "put")).toBe(true));
+    const photoRequest = requests.find((request) => request.url === "/users/upload-photo")!;
+    expect((photoRequest.data as FormData).get("photo")).toBe(image);
+    await person.upload(screen.getByLabelText("Change cover photo"), image);
+    await waitFor(() => expect(requests.some((request) => request.url === "/users/upload-cover" && request.method === "put")).toBe(true));
+    const coverRequest = requests.find((request) => request.url === "/users/upload-cover")!;
+    expect((coverRequest.data as FormData).get("cover")).toBe(image);
+  });
   it("updates the sidebar follow button without a success toast", async () => {
     handler = (config) => config.url === "/users/suggestions" ? { suggestions: [other] } : config.url === "/users/user-2/follow" ? { following: true } : { user: me };
     const success = vi.spyOn(toast, "success");
