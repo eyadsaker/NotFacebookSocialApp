@@ -24,7 +24,7 @@ export default function Settings() {
     onSuccess: (data) => {
       if (data?.token) saveUserToken(data.token, data.user || user || undefined);
       else removeUserToken();
-      reset(); toast.success("Password changed successfully.");
+      reset();
     },
     onError: (error) => toast.error(errorMessage(error)),
   });

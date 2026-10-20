@@ -29,7 +29,6 @@ export default function PostComposer({ post, onDone }: { post?: Post; onDone?: (
       setBody(""); setImage(null); setPreview("");
       if (inputRef.current) inputRef.current.value = "";
       void refresh();
-      toast.success(post ? "Post updated" : "Post published");
       onDone?.();
     },
     onError: (error) => toast.error(errorMessage(error)),

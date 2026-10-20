@@ -108,11 +108,13 @@ describe("posts and comments", () => {
     await waitFor(() => expect(requests.some((r) => r.method === "delete" && r.url === "/posts/post-1")).toBe(true));
   });
   it("sends likes and shares to the selected post", async () => {
+    const success = vi.spyOn(toast, "success");
     mount(<PostActions post={post} />);
     await userEvent.click(screen.getByRole("button", { name: "Like" }));
     await waitFor(() => expect(requests.some((r) => r.method === "put" && r.url === "/posts/post-1/like")).toBe(true));
     await userEvent.click(screen.getByRole("button", { name: "Share" }));
     await waitFor(() => expect(requests.some((r) => r.method === "post" && r.url === "/posts/post-1/share")).toBe(true));
+    expect(success).not.toHaveBeenCalled();
   });
   it("publishes a post with multipart data and invalidates feeds", async () => {
     const { client } = mount(<PostComposer />);

@@ -39,10 +39,9 @@ export default function RegisterForm() {
     
 
     try {
-      const {message} = await signup.mutateAsync(data)
+      await signup.mutateAsync(data)
 
 
-      toast.success(message)
       navigate("/auth/login")
       
     } catch (error: unknown) {

@@ -20,8 +20,8 @@ export default function CommentItem({ comment, postId, postOwnerId }: { comment:
   const [confirming, setConfirming] = useState(false);
   const [content, setContent] = useState(comment.content ?? "");
   const refresh = usePostRefresh();
-  const edit = useMutation({ mutationFn: saveComment, onSuccess: () => { setEditing(false); void refresh(); toast.success("Comment updated"); }, onError: (error) => toast.error(errorMessage(error)) });
-  const remove = useMutation({ mutationFn: deleteComment, onSuccess: () => { void refresh(); toast.success("Comment deleted"); }, onError: (error) => toast.error(errorMessage(error)) });
+  const edit = useMutation({ mutationFn: saveComment, onSuccess: () => { setEditing(false); void refresh(); }, onError: (error) => toast.error(errorMessage(error)) });
+  const remove = useMutation({ mutationFn: deleteComment, onSuccess: () => { void refresh(); }, onError: (error) => toast.error(errorMessage(error)) });
   return <div className="flex gap-2.5">
     <Link to={`/profile/${comment.commentCreator?._id}`}><UserAvatar user={comment.commentCreator} className="size-9" /></Link>
     <div className="min-w-0 flex-1">

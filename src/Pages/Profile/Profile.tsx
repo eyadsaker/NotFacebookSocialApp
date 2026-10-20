@@ -36,14 +36,14 @@ export default function Profile() {
   const photoUpload = useMutation({
     mutationFn: uploadProfilePhoto,
     onMutate: () => setUploading("photo"),
-    onSuccess: (updatedProfile) => { updateProfile(updatedProfile); toast.success("Profile photo updated"); },
+    onSuccess: (updatedProfile) => { updateProfile(updatedProfile); },
     onError: (error) => toast.error(errorMessage(error)),
     onSettled: () => setUploading(null),
   });
   const coverUpload = useMutation({
     mutationFn: uploadCoverPhoto,
     onMutate: () => setUploading("cover"),
-    onSuccess: (updatedProfile) => { updateProfile(updatedProfile); toast.success("Cover photo updated"); },
+    onSuccess: (updatedProfile) => { updateProfile(updatedProfile); },
     onError: (error) => toast.error(errorMessage(error)),
     onSettled: () => setUploading(null),
   });
@@ -70,9 +70,9 @@ export default function Profile() {
       </div>
       <div className="px-5 pb-6">
         <div className="-mt-10 flex flex-wrap items-end justify-between gap-3">
-          <div className="relative rounded-full bg-white p-1"><UserAvatar user={profile} className="size-24" />
-            {own && <><input ref={photoInput} aria-label="Change profile photo" className="sr-only" type="file" accept="image/*" onChange={(event) => selectImage(event, "photo")} />
-              <button type="button" aria-label="Upload profile photo" onClick={() => photoInput.current?.click()} disabled={uploading !== null} className="absolute bottom-0 right-0 grid size-8 place-items-center rounded-full border-2 border-white bg-primary text-white shadow-sm transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-70"><Camera size={15} /></button></>}
+          <div className="relative size-24 shrink-0"><div className="size-full overflow-hidden rounded-full border-4 border-white bg-white shadow-sm"><UserAvatar user={profile} className="size-full" /></div>
+            {own && <><input ref={photoInput} aria-label="Change profile photo" className="hidden" type="file" accept="image/*" onChange={(event) => selectImage(event, "photo")} />
+              <button type="button" aria-label="Upload profile photo" onClick={() => photoInput.current?.click()} disabled={uploading !== null} className="absolute -bottom-0.5 -right-0.5 grid size-8 place-items-center rounded-full border-2 border-white bg-primary text-white shadow-sm transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-70"><Camera size={15} /></button></>}
           </div>
           {own ? <Link to="/settings" className="mb-1 inline-flex items-center gap-2 rounded-xl bg-slate-100 px-4 py-2 text-sm font-bold text-slate-700"><Settings size={17} />Settings</Link> : <Button className="gap-2 bg-primary text-white" isDisabled={follow.isPending} onPress={() => follow.mutate(profile._id)}><UserPlus size={17} />{profile.isFollowing ? "Unfollow" : "Follow"}</Button>}
         </div>
