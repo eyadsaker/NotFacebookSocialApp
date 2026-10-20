@@ -21,4 +21,6 @@ export async function savePost({ id, form }: { id?: string; form: FormData }) {
 export async function deletePost(id: string) { await api.delete(`/posts/${id}`); }
 export async function toggleLike(id: string) { await api.put(`/posts/${id}/like`); }
 export async function toggleBookmark(id: string) { await api.put(`/posts/${id}/bookmark`); }
-export async function sharePost(id: string) { await api.post(`/posts/${id}/share`); }
+export async function sharePost({ id, body }: { id: string; body: string }) {
+  await api.post(`/posts/${id}/share`, { body });
+}

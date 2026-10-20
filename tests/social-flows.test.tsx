@@ -113,7 +113,11 @@ describe("posts and comments", () => {
     await userEvent.click(screen.getByRole("button", { name: "Like" }));
     await waitFor(() => expect(requests.some((r) => r.method === "put" && r.url === "/posts/post-1/like")).toBe(true));
     await userEvent.click(screen.getByRole("button", { name: "Share" }));
+    expect(screen.getByRole("dialog", { name: "Share post" })).toBeTruthy();
+    fireEvent.change(screen.getByLabelText("Share message"), { target: { value: "Worth sharing" } });
+    await userEvent.click(screen.getByRole("button", { name: "Share now" }));
     await waitFor(() => expect(requests.some((r) => r.method === "post" && r.url === "/posts/post-1/share")).toBe(true));
+    expect(JSON.parse(requests.find((r) => r.method === "post" && r.url === "/posts/post-1/share")?.data as string)).toEqual({ body: "Worth sharing" });
     expect(success).not.toHaveBeenCalled();
   });
   it("publishes a post with multipart data and invalidates feeds", async () => {
